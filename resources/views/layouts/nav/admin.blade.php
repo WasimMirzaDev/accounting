@@ -61,6 +61,32 @@
           <a href="{{route('voucher.show')}}" title="Attendance Ranking"><span id="attendance_ranking_menu" class="menu-item-parent">Vouchers</span></a>
         </li>
 
+       
+       </ul>
+    </li>
+    
+    <li id="1" class="">
+       <a href="javascript:" title="Reports"><i class="fa fa-edit"></i><span class="menu-item-parent">Reports</span><b class="collapse-sign"><em class="fa fa-plus-square-o"></em></b></a>
+       <ul style="display: none;">
+         <li>
+           <a href="{{route('trial.show')}}" title="Trial Balance"><span id="trial_balance" class="menu-item-parent">Trial Balance</span></a>
+         </li>
+         <li>
+           <a href="{{route('profitloss.show')}}" title="Profit & Loss"><span id="profit_loss" class="menu-item-parent">Profit & Loss</span></a>
+         </li>
+
+        <li>
+          <a href="{{route('balancesheet.show')}}" title="Balance Sheet"><span id="balance_sheet" class="menu-item-parent">Balance Sheet</span></a>
+        </li>
+
+        <li>
+          <a href="{{route('advancetrial.show')}}" title="Advance Trial Balance"><span id="advance_trial_balance" class="menu-item-parent">Advance Trial Balance</span></a>
+        </li>
+
+        <li>
+          <a href="{{route('ledgertotal.show')}}" title="Ledger Total"><span id="ledger_menu" class="menu-item-parent">Ledger With Month Totals</span></a>
+        </li>
+
         <li>
           <a href="{{route('ledger.show')}}" title="Ledger"><span id="ledger_menu" class="menu-item-parent">Ledger</span></a>
         </li>

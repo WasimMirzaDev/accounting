@@ -211,5 +211,30 @@ Route::prefix('ledger')->name('ledger.')->middleware('isAdmin', 'auth')->group(f
     Route::get('/show', [App\Http\Controllers\VoucherController::class, 'get_ledger'])->name('show');
     Route::post('/show', [App\Http\Controllers\VoucherController::class, 'show_ledger'])->name('show');
 });
+Route::prefix('trial')->name('trial.')->middleware('isAdmin', 'auth')->group(function(){
+    // accounting start
+    Route::get('/show', [App\Http\Controllers\TrialBalanceController::class, 'trial_balance'])->name('show');
+    Route::post('/show', [App\Http\Controllers\TrialBalanceController::class, 'show_trialbalance'])->name('show');
+});
+Route::prefix('profitloss')->name('profitloss.')->middleware('isAdmin', 'auth')->group(function(){
+    // accounting start
+    Route::get('/show', [App\Http\Controllers\ProfitLossController::class, 'profitloss'])->name('show');
+    Route::post('/show', [App\Http\Controllers\ProfitLossController::class, 'show_profitloss'])->name('show');
+});
+Route::prefix('balancesheet')->name('balancesheet.')->middleware('isAdmin', 'auth')->group(function(){
+    // accounting start
+    Route::get('/show', [App\Http\Controllers\BalanceSheetController::class, 'balancesheet'])->name('show');
+    Route::post('/show', [App\Http\Controllers\BalanceSheetController::class, 'show_balancesheet'])->name('show');
+});
+Route::prefix('advancetrial')->name('advancetrial.')->middleware('isAdmin', 'auth')->group(function(){
+    // accounting start
+    Route::get('/show', [App\Http\Controllers\AdvanceTrialBalanceController::class, 'advancetrial'])->name('show');
+    Route::post('/show', [App\Http\Controllers\AdvanceTrialBalanceController::class, 'show_advancetrial'])->name('show');
+});
+Route::prefix('ledgertotal')->name('ledgertotal.')->middleware('isAdmin', 'auth')->group(function(){
+    // accounting start
+    Route::get('/show', [App\Http\Controllers\LedgerTotalController::class, 'ledgertotal'])->name('show');
+    Route::post('/show', [App\Http\Controllers\LedgerTotalController::class, 'show_ledgertotal'])->name('show');
+});
 
     // accounting end
