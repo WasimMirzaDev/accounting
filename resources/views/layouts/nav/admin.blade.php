@@ -61,6 +61,10 @@
           <a href="{{route('voucher.show')}}" title="Attendance Ranking"><span id="attendance_ranking_menu" class="menu-item-parent">Vouchers</span></a>
         </li>
 
+        <li>
+          <a href="{{route('transaction.show')}}" title="Attendance Ranking"><span id="attendance_ranking_menu" class="menu-item-parent">Transactions</span></a>
+        </li>
+
        
        </ul>
     </li>
