@@ -358,7 +358,7 @@ label, .col {
                               Post Voucher
                               </button>
                               <button type="submit" id="save_btn" class="btn btn-success">
-                              Save
+                              Update
                               </button>
                                <a href="{{route('voucher.show')}}"
                                id="save_btn" class="btn btn-primary">
@@ -377,34 +377,5 @@ label, .col {
  </section>
 
 
-<script type="text/javascript">
-  function show_head_modal()
-  {
-    $("#headModal").modal('show');
-  }
-  function fetch_vch_detail(vch)
-  {
-    let vsd = $('option:selected', $(vch)).attr('mygl_date');
-    let vn = $('option:selected', $(vch)).attr('myvch_num');
-    let ht = $('option:selected', $(vch)).attr('myhead_type');
-    let gl_id = $('option:selected', $(vch)).val();
-    $("#vch_selected_date").val(vsd);
-    $("#vch_selected_num").val(vn);
-    $("#head_selected_type").val(ht);
-    $.ajax({
-      url: '/accounting/voucher/change',
-      method: 'POST',
-      data:{_token:$('meta[name="csrf-token"]').attr('content'), vch_selected_date:vsd, vch_selected_num: vn, head_selected_type:ht, gl_id:gl_id},
-      success: function(){
-        location.reload();
-      }
-    })
-  }
-  function fetch_acc_detail(acc)
-  {
-    $("#acc_selected_num").val($('option:selected', $(acc)).attr('myacc_num'));
-    $("#acc_selected_type").val($('option:selected', $(acc)).attr('myacc_type'));
-  }
-</script>
 
 @endsection

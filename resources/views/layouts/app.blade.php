@@ -447,6 +447,17 @@ use \App\Http\Controllers\Controller;
 		</div>
 		<!-- END MAIN PANEL -->
 		@yield('footer')
+<style>
+.dt-button:nth-child(4){
+  display:none !important;
+}
+.dt-button:nth-child(5){
+  display:none !important;
+}
+.dataTables_filter{
+	margin-top:-40px !important;
+}
+</style>
 		<!-- PAGE FOOTER -->
 		<div class="page-footer">
 			<div class="row">

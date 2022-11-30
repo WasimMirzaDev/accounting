@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Voucher;
 use App\Models\Headtype;
 use App\Models\Vchtype;
+
 use App\Models\Level3;
+use App\Models\Level2;
+use App\Models\Level1;
 use App\Models\Voucherdetail;
 use Illuminate\Support\Facades\DB;
 class VoucherController extends Controller
@@ -231,8 +234,15 @@ class VoucherController extends Controller
  {
    $level2 = Level2::all();
     $d = Level3::where('id', $id)->first();
-    // dd($d);
-     return view('account',get_defined_vars());
+    $voucher_id = Voucher::max('vch_num')+1;
+   $vchs = Voucher::all();
+   $htype = Headtype::all();
+   $vchtype = Vchtype::all();
+   $acc_d = Level3::all();
+   $list = Voucherdetail::where('gl_id', old('gl_id'))->where('dr', '>', 0)->orderBy('created_at')->get();
+   $pays = Voucherdetail::where('gl_id', old('gl_id'))->where('cr', '>', 0)->orderBy('created_at')->get();
+   
+     return view('voucher-edit',get_defined_vars());
  }
 
  /**
