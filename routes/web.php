@@ -239,6 +239,9 @@ Route::prefix('ledgertotal')->name('ledgertotal.')->middleware('isAdmin', 'auth'
 Route::prefix('transaction')->name('transaction.')->middleware('isAdmin', 'auth')->group(function(){
     // accounting start
     Route::get('/show', [App\Http\Controllers\TransactionsController::class, 'index'])->name('show');
+    Route::get('/edit/{id?}', [App\Http\Controllers\TransactionsController::class, 'edit'])->name('edit');
+    Route::get('/delete/{id?}', [App\Http\Controllers\TransactionsController::class, 'destroy'])->name('delete');
+
     Route::post('/show', [App\Http\Controllers\TransactionsController::class, 'show_transaction'])->name('show');
     Route::post('/save', [App\Http\Controllers\TransactionsController::class, 'store'])->name('save');
 });
