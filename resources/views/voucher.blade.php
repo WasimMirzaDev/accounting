@@ -15,6 +15,7 @@ label, .col {
 .readonly{
   background-color:gainsboro !important;
   margin-top:6px;
+  padding: 0px;
 }
 
 </style>
