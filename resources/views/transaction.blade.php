@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 @php
-$route_prefix = "voucher.";
+$route_prefix = "transaction.";
 @endphp
 <style media="screen">
 #dojo_menu{
@@ -18,7 +18,6 @@ label, .col {
   padding: 0px;
 }
 
-
 </style>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
@@ -30,7 +29,7 @@ label, .col {
              <header role="heading">
                 <div class="jarviswidget-ctrls" role="menu">   <a href="javascript:void(0);" class="button-icon jarviswidget-toggle-btn" rel="tooltip" title="" data-placement="bottom" data-original-title="Collapse"><i class="fa fa-minus"></i></a> <a href="javascript:void(0);" class="button-icon jarviswidget-fullscreen-btn" rel="tooltip" title="" data-placement="bottom" data-original-title="Fullscreen"><i class="fa fa-expand "></i></a> <a href="javascript:void(0);" class="button-icon jarviswidget-delete-btn" rel="tooltip" title="" data-placement="bottom" data-original-title="Delete"><i class="fa fa-times"></i></a></div>
                 <span class="widget-icon"> <i class="fa fa-check txt-color-green"></i> </span>
-                <h2>Voucher</h2>
+                <h2>Transaction</h2>
                 <span class="jarviswidget-loader" style="display: none;"><i class="fa fa-refresh fa-spin"></i></span>
              </header>
              <div role="content" style="display: block;">
@@ -93,9 +92,9 @@ label, .col {
                                       </label>
                                     </section>
                                   </div>
-                                  <button type="button" class="btn btn-default" data-dismiss="modal" style="float:right; padding:6px 12px; margin-left:6px;">Close</button>
+                                  <button type="button" class="btn btn-default" data-dismiss="modal" style="float:right">Close</button>
                                   &nbsp;&nbsp;
-                                  <button type="submit" class="btn btn-success" style="float:right; padding:6px 12px;">Save</button>
+                                  <button type="submit" class="btn btn-success" style="float:right">Save</button>
                                 </div>
                                 </form>
                               </div>
@@ -226,9 +225,9 @@ label, .col {
                               <div class="row">
                                 <!-- <div class="col col-2">
                                    <div class="row">
-
-
-
+                                     
+                                     
+                                     
                                    </div>
                                 </div> -->
                                 <!-- <div class="col col-12"> -->
@@ -239,14 +238,14 @@ label, .col {
                                         <textarea name="description" cols="100" rows="2">{{!empty($d->id) ? $d->description : old('description')}}</textarea>
                                       </label>
                                     </section>
-
+                                    
                                   <!-- </div> -->
                                 <!-- </div> -->
                               </div>
 
                               <div class="row">
-
-                                <section class="col col-4">
+                              
+                                <!-- <section class="col col-4">
                                    <label for="name" class="label">Posting Account Details:</label>
                                    <select class="select2" name="posting_account">
                                      <option value="">Select Account</option>
@@ -258,13 +257,13 @@ label, .col {
                                        @endforeach
                                      @endif
                                    </select>
-                                </section>
-                                <section class="col col-8">
+                                </section> -->
+                                <!-- <section class="col col-8">
                                       Narration:
                                       <label class="input">
                                         <input  name="narration" value="{{!empty($d->id) ? $d->narration : old('narration')}}" style="margin-top:6px">
                                       </label>
-                                </section>
+                                </section> -->
                                 <!-- <section class="col col-2">
                                   Balance:
                                   <label class="input">
@@ -275,18 +274,6 @@ label, .col {
                              </section>
                             </div>
                             </fieldset>
-                            <footer>
-                              <button type="submit" id="save_btn" class="btn btn-info" style="display:none;">
-                              Post Voucher
-                              </button>
-                              <button type="submit" id="save_btn" class="btn btn-success">
-                              Save
-                              </button>
-                               <a href="{{route('voucher.show')}}"
-                               id="save_btn" class="btn btn-primary">
-                               Cancel
-                             </a>
-                            </footer>
                             <div id="list" class="tab-pane">
                         <div class="row">
                           <div class="col col-md-6">
@@ -367,10 +354,21 @@ label, .col {
                         </div>
 
                       </div>
-
+                            <footer>
+                              <button type="submit" id="save_btn" class="btn btn-info" style="display:none;">
+                              Post Voucher
+                              </button>
+                              <button type="submit" id="save_btn" class="btn btn-success">
+                              Save
+                              </button>
+                               <a href="{{route('voucher.show')}}"
+                               id="save_btn" class="btn btn-primary">
+                               Cancel
+                             </a>
+                            </footer>
                          </form>
                       </div>
-
+                      
                    </div>
                 </div>
              </div>
@@ -395,7 +393,7 @@ label, .col {
     $("#vch_selected_num").val(vn);
     $("#head_selected_type").val(ht);
     $.ajax({
-      url: "{{route('voucher.change')}}",
+      url: '/accounting/voucher/change',
       method: 'POST',
       data:{_token:$('meta[name="csrf-token"]').attr('content'), vch_selected_date:vsd, vch_selected_num: vn, head_selected_type:ht, gl_id:gl_id},
       success: function(){
