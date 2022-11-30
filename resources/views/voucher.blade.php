@@ -17,6 +17,7 @@ label, .col {
   margin-top:6px;
 }
 
+
 </style>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
@@ -91,9 +92,9 @@ label, .col {
                                       </label>
                                     </section>
                                   </div>
-                                  <button type="button" class="btn btn-default" data-dismiss="modal" style="float:right">Close</button>
+                                  <button type="button" class="btn btn-default" data-dismiss="modal" style="float:right; padding:6px 12px; margin-left:6px;">Close</button>
                                   &nbsp;&nbsp;
-                                  <button type="submit" class="btn btn-success" style="float:right">Save</button>
+                                  <button type="submit" class="btn btn-success" style="float:right; padding:6px 12px;">Save</button>
                                 </div>
                                 </form>
                               </div>
@@ -224,9 +225,9 @@ label, .col {
                               <div class="row">
                                 <!-- <div class="col col-2">
                                    <div class="row">
-                                     
-                                     
-                                     
+
+
+
                                    </div>
                                 </div> -->
                                 <!-- <div class="col col-12"> -->
@@ -237,13 +238,13 @@ label, .col {
                                         <textarea name="description" cols="100" rows="2">{{!empty($d->id) ? $d->description : old('description')}}</textarea>
                                       </label>
                                     </section>
-                                    
+
                                   <!-- </div> -->
                                 <!-- </div> -->
                               </div>
 
                               <div class="row">
-                              
+
                                 <section class="col col-4">
                                    <label for="name" class="label">Posting Account Details:</label>
                                    <select class="select2" name="posting_account">
@@ -273,6 +274,18 @@ label, .col {
                              </section>
                             </div>
                             </fieldset>
+                            <footer>
+                              <button type="submit" id="save_btn" class="btn btn-info" style="display:none;">
+                              Post Voucher
+                              </button>
+                              <button type="submit" id="save_btn" class="btn btn-success">
+                              Save
+                              </button>
+                               <a href="{{route('voucher.show')}}"
+                               id="save_btn" class="btn btn-primary">
+                               Cancel
+                             </a>
+                            </footer>
                             <div id="list" class="tab-pane">
                         <div class="row">
                           <div class="col col-md-6">
@@ -353,21 +366,10 @@ label, .col {
                         </div>
 
                       </div>
-                            <footer>
-                              <button type="submit" id="save_btn" class="btn btn-info" style="display:none;">
-                              Post Voucher
-                              </button>
-                              <button type="submit" id="save_btn" class="btn btn-success">
-                              Save
-                              </button>
-                               <a href="{{route('voucher.show')}}"
-                               id="save_btn" class="btn btn-primary">
-                               Cancel
-                             </a>
-                            </footer>
+
                          </form>
                       </div>
-                      
+
                    </div>
                 </div>
              </div>
@@ -392,7 +394,7 @@ label, .col {
     $("#vch_selected_num").val(vn);
     $("#head_selected_type").val(ht);
     $.ajax({
-      url: '/accounting/voucher/change',
+      url: "{{route('voucher.change')}}",
       method: 'POST',
       data:{_token:$('meta[name="csrf-token"]').attr('content'), vch_selected_date:vsd, vch_selected_num: vn, head_selected_type:ht, gl_id:gl_id},
       success: function(){

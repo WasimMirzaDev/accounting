@@ -202,7 +202,7 @@ Route::prefix('voucher')->name('voucher.')->middleware('isAdmin', 'auth')->group
     Route::get('/edit/{id?}', [App\Http\Controllers\VoucherController::class, 'edit'])->name('edit');
     Route::get('/delete/{id?}', [App\Http\Controllers\VoucherController::class, 'destroy'])->name('delete');
     Route::post('/save', [App\Http\Controllers\VoucherController::class, 'store'])->name('save');
-    Route::post('/change', [App\Http\Controllers\VoucherController::class, 'change_voucher_number']);
+    Route::post('/change', [App\Http\Controllers\VoucherController::class, 'change_voucher_number'])->name('change');
     Route::post('/save-headtype', [App\Http\Controllers\VoucherController::class, 'store_headtype'])->name('headtype.save');
 });
 

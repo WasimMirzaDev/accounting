@@ -457,6 +457,10 @@ use \App\Http\Controllers\Controller;
 .dataTables_filter{
 	margin-top:-40px !important;
 }
+/* .dataTables_filter label{
+  display:none !important;
+} */
+ 
 </style>
 		<!-- PAGE FOOTER -->
 		<div class="page-footer">
