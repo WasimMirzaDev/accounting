@@ -15,7 +15,6 @@ label, .col {
 .readonly{
   background-color:gainsboro !important;
   margin-top:6px;
-  padding: 0px;
 }
 
 
@@ -63,7 +62,7 @@ label, .col {
                                     <section class="col col-6">
                                       Date: <small style="color:red;">*</small>
                                       <label class="input">
-                                        <input type="text" class="datepicker" autocomplete="off" name="gl_date" value="{{!empty($d->id) ? $d->gl_date : old('gl_date')}}">
+                                        <input type="text" class="datepicker" autocomplete="off" name="gl_date" value="{{!empty(old('gl_date')) ? old('gl_date') : date('d.m.Y')}}">
                                       </label>
                                     </section>
                                     <section class="col col-6">
@@ -131,7 +130,7 @@ label, .col {
                                 <section class="col col-2">
                                   <button type="button" class="btn btn-info" onclick="show_head_modal()" name="button" style="padding:8px 16px"><i class="fa fa-lg fa-plus"></i> Add Head</button>
                                 </section>
-                                <section class="col col-3">
+                                <section class="col col-4">
                                    <label for="name" class="label">Search Voucher #:</label>
                                    <select class="select2" name="gl_id" onchange="fetch_vch_detail(this)">
                                      <option value="">Select Voucher</option>
@@ -142,27 +141,47 @@ label, .col {
                                      @endif
                                    </select>
                                 </section>
-                                <section class="col col-2">
+                                <section class="col col-6">
+                                  <table>
+                                    <tr>
+                                      <td class="navitem bg-blue">
+                                        Total Payments
+                                        <br/>
+                                        {{$total_payments}}
+                                      </td>
+                                      <td class="navitem bg-green">
+                                        Total Receivings
+                                        <br/>
+                                        {{$total_receivings}}
+                                      </td>
+                                      <td class="navitem bg-black">
+                                        Total Balance
+                                        <br/>
+                                        {{$total_balance}}
+                                      </td>
+                                    </tr>
+                                  </table>
+
+                                </section>
+                                <section class="col col-2" style="display:none;">
                                   Date
                                   <label class="input"> <i class="icon-prepend fa fa-user"></i>
                                     <input type="text" class="readonly" autocomplete="off" name="vch_selected_date" value="{{old('vch_selected_date')}}" placeholder="" readonly id="vch_selected_date">
                                   </label>
                                 </section>
-                                <section class="col col-2">
+                                <section class="col col-2" style="display:none;">
                                   Voucher #
                                   <label class="input"> <i class="icon-prepend fa fa-user"></i>
                                     <input type="text" class="readonly" autocomplete="off" name="vch_selected_num" value="{{old('vch_selected_num')}}" placeholder="" readonly id="vch_selected_num">
                                   </label>
                                 </section>
-                                <section class="col col-3">
+                                <section class="col col-3" style="display:none;">
                                   Head Type
                                   <label class="input"> <i class="icon-prepend fa fa-user"></i>
                                     <input type="text" class="readonly" autocomplete="off" name="head_selected_type" value="{{old('head_selected_type')}}" placeholder="" readonly id="head_selected_type">
                                   </label>
                                 </section>
                               </div>
-                              <hr>
-                              <br><br>
 
 
                               <div class="row">
@@ -179,13 +198,17 @@ label, .col {
                                 </section>
 
                                 <section class="col col-3">
-                                   <label for="name" class="label">Account Name:</label>
+                                   <label for="name" class="label" style="" id="acc_balance">Account:</label>
                                    <select class="select2" name="level3_id" onchange="fetch_acc_detail(this)">
-                                     <option value="">Select Account</option>
+                                     <option value="" color="" balance="" myacc_num="">Select Account</option>
                                      @if(!empty($acc_d))
                                        @foreach($acc_d as $acc)
-                                         <option myacc_num="{{$acc->acc_num}}" @if($acc->id == old('level3_id')) {{'selected'}} @endif myacc_type="{{$acc->account_type->name}}" value="{{$acc->id}}">
-                                           {{$acc->acc_name}}
+                                       @php $balance = $acc->all_vouchers->sum('dr') - $acc->all_vouchers->sum('cr') @endphp
+                                         <option myacc_num="{{$acc->acc_num}}"
+                                           color="<?= $balance < 0 ? 'red' : 'green' ?>"
+                                           balance="{{$balance < 0 ? '('. abs($balance) . ')' : $balance}}"
+                                           @if($acc->id == old('level3_id')) {{'selected'}} @endif myacc_type="{{$acc->account_type->name}}" value="{{$acc->id}}">
+                                           {{$acc->acc_name." ".$acc->acc_num}}
                                          </option>
                                        @endforeach
                                      @endif
@@ -213,7 +236,7 @@ label, .col {
                                 <section class="col col-2" style="margin-top: 5px;">
                                        Doc Date:
                                        <label class="input">
-                                         <input type="text" class="datepicker" autocomplete="off" value="{{!empty($d->id) ? $d->doc_date : old('doc_date')}}" name="doc_date">
+                                         <input type="text" class="datepicker" autocomplete="off" value="{{!empty(old('doc_date')) ? old('doc_date') : date('d.m.Y')}}" name="doc_date">
                                        </label>
                                 </section>
                                 <section class="col col-2" style="margin-top: 5px;">
@@ -247,13 +270,14 @@ label, .col {
                               <div class="row">
 
                                 <section class="col col-4">
-                                   <label for="name" class="label">Posting Account Details:</label>
-                                   <select class="select2" name="posting_account">
-                                     <option value="">Select Account</option>
+                                   <label for="name" class="label">Posting Account Details: <span id="posting_acc_balance"></span></label>
+                                   <select class="select2" name="posting_account" onchange="fetch_posting_acc_detail(this)">
+                                     <option color="" balance="" value="">Select Account</option>
                                      @if(!empty($acc_d))
                                        @foreach($acc_d as $acc)
-                                         <option @if($acc->id == old('posting_account')) {{'selected'}} @endif myacc_num="{{$acc->acc_num}}" myacc_type="{{$acc->account_type->name}}" value="{{$acc->id}}">
-                                           {{$acc->acc_name}}
+                                       @php $balance = $acc->all_vouchers->sum('dr') - $acc->all_vouchers->sum('cr') @endphp
+                                         <option color="<?= $balance < 0 ? 'red' : 'green' ?>" balance="{{$balance < 0 ? '('. abs($balance) . ')' : $balance}}" @if($acc->id == old('posting_account')) {{'selected'}} @endif myacc_num="{{$acc->acc_num}}" myacc_type="{{$acc->account_type->name}}" value="{{$acc->id}}">
+                                           {{$acc->acc_name." ".$acc->acc_num}}
                                          </option>
                                        @endforeach
                                      @endif
@@ -276,10 +300,10 @@ label, .col {
                             </div>
                             </fieldset>
                             <footer>
-                              <button type="submit" id="save_btn" class="btn btn-info" style="display:none;">
+                              <button type="submit" name="action" value="post" id="save_btn" class="btn btn-info">
                               Post Voucher
                               </button>
-                              <button type="submit" id="save_btn" class="btn btn-success">
+                              <button type="submit" name="action" value="save" id="save_btn" class="btn btn-success">
                               Save
                               </button>
                                <a href="{{route('voucher.show')}}"
@@ -289,17 +313,18 @@ label, .col {
                             </footer>
                             <div id="list" class="tab-pane">
                         <div class="row">
-                          <div class="col col-md-6">
+                          <div class="col col-md-12">
                             <div class="alert alert-info" style="font-size:20px; text-align:center;">
-                              Receipts
+                              Receipts and Payments
                             </div>
-                            <table id="datatable_fixed_column2" class="display table table-striped table-bordered" width="100%">
+                            <table id="datatable_fixed_column2" data-order="[]" class="display table table-striped table-bordered" width="100%">
                                <thead>
                                   <tr>
                                      <th>Account</th>
                                      <th>DW</th>
                                      <th>Description</th>
-                                     <th>Amount</th>
+                                     <th>Dr</th>
+                                     <th>Cr</th>
                                      <th>Doc#</th>
                                      <th>Doc Date</th>
                                      <th>Edit</th>
@@ -315,48 +340,11 @@ label, .col {
                                        <td>{{$l->account_name->acc_name}}</td>
                                        <td>{{$l->voucher_type->short_name}}-{{$l->id}}</td>
                                        <td>{{$l->description}}</td>
+                                       <td>{{$l->dr}}</td>
                                        <td>{{$l->cr}}</td>
                                        <td>{{$l->doc_num}}</td>
                                        <td>{{$l->doc_date}}</td>
-                                       <td><a id="edit_{{$l->id}}" href="{{route($route_prefix.'edit')}}/{{$l->id}}"     class="btn btn-primary btn-xs" ><i class="fa fa-edit"></i></a> </td>
-                                       <!-- <td><button type="button" id="delete_{{$l->id}}" href="{{route($route_prefix.'delete')}}/{{$l->id}}" class="btn btn-danger btn-xs"  onclick="del({{$l->id}})">X</button> </td> -->
-                                    </tr>
-                                    @endforeach
-                                  @endif
-                               </tbody>
-                            </table>
-                          </div>
-
-                          <div class="col col-md-6">
-                            <div class="alert alert-info" style="font-size:20px; text-align:center;">
-                              Payments
-                            </div>
-                            <table id="datatable_fixed_column" class="display table table-striped table-bordered" width="100%">
-                               <thead>
-                                  <tr>
-                                     <th>Account</th>
-                                     <th>DW</th>
-                                     <th>Description</th>
-                                     <th>Amount</th>
-                                     <th>Doc#</th>
-                                     <th>Doc Date</th>
-                                     <th>Edit</th>
-                                     <!-- <th>Delete</th> -->
-                                  </tr>
-                               </thead>
-                               <tbody>
-                                  @if(!empty($list))
-                                    @php $sr = 1
-                                    @endphp
-                                    @foreach($list as $l)
-                                    <tr id="row_{{$l->id}}">
-                                       <td>{{$l->account_name->acc_name}}</td>
-                                       <td>{{$l->voucher_type->short_name}}-{{$l->id}}</td>
-                                       <td>{{$l->description}}</td>
-                                       <td>{{$l->dr}}</td>
-                                       <td>{{$l->doc_num}}</td>
-                                       <td>{{$l->doc_date}}</td>
-                                       <td><a id="edit_{{$l->id}}" href="{{route($route_prefix.'edit')}}/{{$l->id}}"     class="btn btn-primary btn-xs" ><i class="fa fa-edit"></i></a> </td>
+                                       <td><a id="edit_{{$l->id}}" href="{{route('transaction.edit')}}/{{$l->id}}"     class="btn btn-primary btn-xs" ><i class="fa fa-edit"></i></a> </td>
                                        <!-- <td><button type="button" id="delete_{{$l->id}}" href="{{route($route_prefix.'delete')}}/{{$l->id}}" class="btn btn-danger btn-xs"  onclick="del({{$l->id}})">X</button> </td> -->
                                     </tr>
                                     @endforeach
@@ -407,6 +395,14 @@ label, .col {
   {
     $("#acc_selected_num").val($('option:selected', $(acc)).attr('myacc_num'));
     $("#acc_selected_type").val($('option:selected', $(acc)).attr('myacc_type'));
+    $("#acc_balance").text("Account Balance: "+$('option:selected', $(acc)).attr('balance'));
+    $("#acc_balance").css('color', $('option:selected', $(acc)).attr('color'));
+  }
+  function fetch_posting_acc_detail(acc)
+  {
+    $("#posting_acc_balance").text($('option:selected', $(acc)).attr('balance'));
+    $("#posting_acc_balance").text(" Balance: "+$('option:selected', $(acc)).attr('balance'));
+    $("#posting_acc_balance").css('color', $('option:selected', $(acc)).attr('color'));
   }
 </script>
 

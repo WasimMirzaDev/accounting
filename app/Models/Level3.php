@@ -13,4 +13,8 @@ class Level3 extends Model
     public function account_type(){
         return $this->belongsTo(Level2::class, 'level2_id', 'id');
     }
+
+    public function all_vouchers(){
+        return $this->hasMany(Voucherdetail::class, 'level3_id', 'id');
+    }
 }

@@ -45,7 +45,7 @@ label, .col {
                    <div class="tab-content">
                       <div id="add" class="tab-pane fade in active ">
 
-
+                        @if(empty($d))
                         <!-- Modal -->
                           <div class="modal fade" id="headModal" role="dialog">
                             <div class="modal-dialog">
@@ -56,13 +56,13 @@ label, .col {
                                   <h4 class="modal-title">Add Transaction Head</h4>
                                 </div>
                                 <div class="modal-body">
-                                  <form class="smart-form" method="post" action="{{route('voucher.headtype.save')}}">
+                                  <form class="smart-form" method="post" action="{{route('transaction.headtype.save')}}">
                                     @csrf
                                   <div class="row">
                                     <section class="col col-6">
                                       Date: <small style="color:red;">*</small>
                                       <label class="input">
-                                        <input type="text" class="datepicker" autocomplete="off" name="gl_date" value="{{!empty($d->id) ? $d->gl_date : old('gl_date')}}">
+                                        <input type="text" class="datepicker" autocomplete="off" name="gl_date" value="{{!empty(old('gl_date')) ? old('gl_date') : date('d.m.Y')}}">
                                       </label>
                                     </section>
                                     <section class="col col-6">
@@ -92,15 +92,16 @@ label, .col {
                                       </label>
                                     </section>
                                   </div>
-                                  <button type="button" class="btn btn-default" data-dismiss="modal" style="float:right">Close</button>
+                                  <button type="button" class="btn btn-default" data-dismiss="modal" style="float:right; padding:6px 12px; margin-left:6px;">Close</button>
                                   &nbsp;&nbsp;
-                                  <button type="submit" class="btn btn-success" style="float:right">Save</button>
+                                  <button type="submit" class="btn btn-success" style="float:right; padding:6px 12px;">Save</button>
                                 </div>
                                 </form>
                               </div>
                             </div>
                           </div>
                         <!-- end modal -->
+                        @endif
                          <form method="post" id="dataForm2" class="smart-form" autocomplete="off" enctype="multipart/form-data" action="{{route($route_prefix.'save')}}">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="id" value="{{!empty($d->id) ? $d->id : 0}}">
@@ -127,21 +128,60 @@ label, .col {
                           <div class="row">
                             <section class="col col-md-12">
                               <div class="row">
+                                @if(empty($d))
                                 <section class="col col-2">
                                   <button type="button" class="btn btn-info" onclick="show_head_modal()" name="button" style="padding:8px 16px"><i class="fa fa-lg fa-plus"></i> Add Head</button>
                                 </section>
-                                <section class="col col-3">
+                                @endif
+                                <section class="col col-4">
                                    <label for="name" class="label">Search Voucher #:</label>
                                    <select class="select2" name="gl_id" onchange="fetch_vch_detail(this)">
                                      <option value="">Select Voucher</option>
                                      @if(!empty($vchs))
                                        @foreach($vchs as $v)
-                                         <option myvch_num="{{$v->vch_num}}" @if($v->id == old('gl_id')) {{'selected'}} @endif myhead_type="{{$v->head_type->name}}" mygl_date="{{date('d/m/Y', strtotime($v->gl_date))}}" value="{{$v->id}}">{{$v->vch_num}} | {{$v->head_type->name}} | {{date('d/m/Y', strtotime($v->gl_date))}}</option>
+                                         <option myvch_num="{{$v->vch_num}}"
+                                           @if($v->id == old('gl_id')) {{'selected'}} @endif
+                                           <?php
+                                            if(!empty($d))
+                                            {
+                                              if($d->gl_id == $v->id)
+                                             {
+                                               echo 'selected';
+                                             }
+                                            }
+                                            else if($v->id == old('gl_id'))
+                                            {
+                                              echo 'selected';
+                                            }
+                                            ?>
+                                            myhead_type="{{$v->head_type->name}}" mygl_date="{{date('d/m/Y', strtotime($v->gl_date))}}" value="{{$v->id}}">{{$v->vch_num}} | {{$v->head_type->name}} | {{date('d/m/Y', strtotime($v->gl_date))}}</option>
                                        @endforeach
                                      @endif
                                    </select>
                                 </section>
-                                <section class="col col-2">
+                                <section class="col col-6">
+                                  <table>
+                                    <tr>
+                                      <td class="navitem bg-blue">
+                                        Total Payments
+                                        <br/>
+                                        {{$total_payments}}
+                                      </td>
+                                      <td class="navitem bg-green">
+                                        Total Receivings
+                                        <br/>
+                                        {{$total_receivings}}
+                                      </td>
+                                      <td class="navitem bg-black">
+                                        Total Balance
+                                        <br/>
+                                        {{$total_balance}}
+                                      </td>
+                                    </tr>
+                                  </table>
+
+                                </section>
+                                <!-- <section class="col col-2">
                                   Date
                                   <label class="input"> <i class="icon-prepend fa fa-user"></i>
                                     <input type="text" class="readonly" autocomplete="off" name="vch_selected_date" value="{{old('vch_selected_date')}}" placeholder="" readonly id="vch_selected_date">
@@ -158,10 +198,8 @@ label, .col {
                                   <label class="input"> <i class="icon-prepend fa fa-user"></i>
                                     <input type="text" class="readonly" autocomplete="off" name="head_selected_type" value="{{old('head_selected_type')}}" placeholder="" readonly id="head_selected_type">
                                   </label>
-                                </section>
+                                </section> -->
                               </div>
-                              <hr>
-                              <br><br>
 
 
                               <div class="row">
@@ -171,20 +209,57 @@ label, .col {
                                      <option value="">Select Type</option>
                                      @if(!empty($vchtype))
                                        @foreach($vchtype as $vt)
-                                         <option @if($vt->id == old('vt_id')) {{'selected'}} @endif value="{{$vt->id}}">{{$vt->name}}</option>
+                                         <option
+                                           <?php
+                                            if(!empty($d))
+                                            {
+                                              if($d->vt_id == $vt->id)
+                                             {
+                                               echo 'selected';
+                                             }
+                                            }
+                                            else if($vt->id == old('vt_id'))
+                                            {
+                                              echo 'selected';
+                                            }
+                                            ?>
+                                           value="{{$vt->id}}">{{$vt->name}}</option>
                                        @endforeach
                                      @endif
                                    </select>
                                 </section>
 
                                 <section class="col col-3">
-                                   <label for="name" class="label">Account Name:</label>
+                                  @if(!empty($d))
+                                   <label for="name" class="label" id="acc_balance" style="color: {{$acc_color}}">Balance {{$acc_balance}}:</label>
+                                   @else
+                                   <label for="name" class="label" id="acc_balance">Account Name:</label>
+                                   @endif
                                    <select class="select2" name="level3_id" onchange="fetch_acc_detail(this)">
                                      <option value="">Select Account</option>
                                      @if(!empty($acc_d))
                                        @foreach($acc_d as $acc)
-                                         <option myacc_num="{{$acc->acc_num}}" @if($acc->id == old('level3_id')) {{'selected'}} @endif myacc_type="{{$acc->account_type->name}}" value="{{$acc->id}}">
-                                           {{$acc->acc_name}}
+                                       @php $balance = $acc->all_vouchers->sum('dr') - $acc->all_vouchers->sum('cr') @endphp
+                                         <option myacc_num="{{$acc->acc_num}}"
+                                           color="<?= $balance < 0 ? 'red' : 'green' ?>"
+                                           balance="{{$balance < 0 ? '('. abs($balance) . ')' : $balance}}"
+                                           myacc_type="{{$acc->account_type->name}}"
+
+                                           <?php
+                                            if(!empty($d))
+                                            {
+                                              if($d->level3_id == $acc->id)
+                                             {
+                                               echo 'selected';
+                                             }
+                                            }
+                                            else if($acc->id == old('level3_id'))
+                                            {
+                                              echo 'selected';
+                                            }
+                                            ?>
+                                            value="{{$acc->id}}">
+                                           {{$acc->acc_name. " ".$acc->acc_num}}
                                          </option>
                                        @endforeach
                                      @endif
@@ -212,7 +287,7 @@ label, .col {
                                 <section class="col col-2" style="margin-top: 5px;">
                                        Doc Date:
                                        <label class="input">
-                                         <input type="text" class="datepicker" autocomplete="off" value="{{!empty($d->id) ? $d->doc_date : old('doc_date')}}" name="doc_date">
+                                         <input type="text" class="datepicker" autocomplete="off" value="{{!empty($d->id) ? date('d.m.Y', strtotime($d->doc_date)) : old('doc_date')}}" name="doc_date">
                                        </label>
                                 </section>
                                 <section class="col col-2" style="margin-top: 5px;">
@@ -225,9 +300,9 @@ label, .col {
                               <div class="row">
                                 <!-- <div class="col col-2">
                                    <div class="row">
-                                     
-                                     
-                                     
+
+
+
                                    </div>
                                 </div> -->
                                 <!-- <div class="col col-12"> -->
@@ -238,13 +313,13 @@ label, .col {
                                         <textarea name="description" cols="100" rows="2">{{!empty($d->id) ? $d->description : old('description')}}</textarea>
                                       </label>
                                     </section>
-                                    
+
                                   <!-- </div> -->
                                 <!-- </div> -->
                               </div>
 
                               <div class="row">
-                              
+
                                 <!-- <section class="col col-4">
                                    <label for="name" class="label">Posting Account Details:</label>
                                    <select class="select2" name="posting_account">
@@ -274,13 +349,29 @@ label, .col {
                              </section>
                             </div>
                             </fieldset>
+                            <footer>
+                              <button type="submit" id="save_btn" class="btn btn-info" style="display:none;">
+                              Post Voucher
+                              </button>
+                              <button type="submit" id="save_btn" class="btn btn-success">
+                                @if(!empty($d))
+                                Update
+                                @else
+                                Save
+                                @endif
+                              </button>
+                               <a href="{{route('transaction.show')}}"
+                               id="save_btn" class="btn btn-primary">
+                               Close
+                             </a>
+                            </footer>
                             <div id="list" class="tab-pane">
                         <div class="row">
                           <div class="col col-md-6">
                             <div class="alert alert-info" style="font-size:20px; text-align:center;">
                               Receipts
                             </div>
-                            <table id="datatable_fixed_column2" class="display table table-striped table-bordered" width="100%">
+                            <table id="datatable_fixed_column2" data-order="[]" class="display table table-striped table-bordered" width="100%">
                                <thead>
                                   <tr>
                                      <th>Account</th>
@@ -318,7 +409,7 @@ label, .col {
                             <div class="alert alert-info" style="font-size:20px; text-align:center;">
                               Payments
                             </div>
-                            <table id="datatable_fixed_column" class="display table table-striped table-bordered" width="100%">
+                            <table id="datatable_fixed_column" data-order="[]" class="display table table-striped table-bordered" width="100%">
                                <thead>
                                   <tr>
                                      <th>Account</th>
@@ -354,21 +445,9 @@ label, .col {
                         </div>
 
                       </div>
-                            <footer>
-                              <button type="submit" id="save_btn" class="btn btn-info" style="display:none;">
-                              Post Voucher
-                              </button>
-                              <button type="submit" id="save_btn" class="btn btn-success">
-                              Save
-                              </button>
-                               <a href="{{route('voucher.show')}}"
-                               id="save_btn" class="btn btn-primary">
-                               Cancel
-                             </a>
-                            </footer>
                          </form>
                       </div>
-                      
+
                    </div>
                 </div>
              </div>
@@ -393,7 +472,7 @@ label, .col {
     $("#vch_selected_num").val(vn);
     $("#head_selected_type").val(ht);
     $.ajax({
-      url: '/accounting/voucher/change',
+      url: "{{route('transaction.change')}}",
       method: 'POST',
       data:{_token:$('meta[name="csrf-token"]').attr('content'), vch_selected_date:vsd, vch_selected_num: vn, head_selected_type:ht, gl_id:gl_id},
       success: function(){
@@ -405,6 +484,14 @@ label, .col {
   {
     $("#acc_selected_num").val($('option:selected', $(acc)).attr('myacc_num'));
     $("#acc_selected_type").val($('option:selected', $(acc)).attr('myacc_type'));
+    $("#acc_balance").text("Account Balance: "+$('option:selected', $(acc)).attr('balance'));
+    $("#acc_balance").css('color', $('option:selected', $(acc)).attr('color'));
+  }
+  function fetch_posting_acc_detail(acc)
+  {
+    $("#posting_acc_balance").text($('option:selected', $(acc)).attr('balance'));
+    $("#posting_acc_balance").text(" Balance: "+$('option:selected', $(acc)).attr('balance'));
+    $("#posting_acc_balance").css('color', $('option:selected', $(acc)).attr('color'));
   }
 </script>
 

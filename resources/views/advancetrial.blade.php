@@ -58,13 +58,13 @@ label, .col {
                              <section class="col col-2">
                                From Date: <small style="color:red;">*</small>
                                <label class="input">
-                                 <input type="text" class="datepicker" autocomplete="off" name="from_date" value="{{old('from_date')}}" placeholder="">
+                                 <input type="text" class="datepicker" autocomplete="off" name="from_date" value="{{!empty(old('from_date')) ? old('from_date') : date('2021-m-d')}}" placeholder="">
                                </label>
                              </section>
                              <section class="col col-2">
                                To Date: <small style="color:red;">*</small>
                                <label class="input">
-                                 <input type="text" class="datepicker" autocomplete="off" name="to_date" value="{{old('to_date')}}" placeholder="">
+                                 <input type="text" class="datepicker" autocomplete="off" name="to_date" value="{{!empty(old('to_date')) ? old('to_date') : date('Y-m-d')}}" placeholder="">
                                </label>
                              </section>
                              <section class="col col-3">
@@ -126,13 +126,13 @@ label, .col {
                  <table width="100%" style="margin-bottom: 10px !important;">
                  <tr>
                         <th width="25%" style="padding:20px; background-color:#007BFF; color:white;text-align:center">Total Opening Balance :{{$total_opening < 0 ? '('.abs($total_opening).')' : $total_opening}}</th>
-                        
+
                         <th width="25%" style="padding:20px; background-color:#28A745; color:white;text-align:center">Total Debit:{{$total_drs < 0 ? '('.abs($total_drs).')' : $total_drs}}</th>
-                        
+
                         <th width="25%" style="padding:20px; background-color:#343A40; color:white;text-align:center">Total Credit:{{$total_cr < 0 ? '('.abs($total_cr).')' : $total_cr}}</th>
-                        
+
                         <th width="25%" style="padding:20px; background-color:#6C757D; color:white;text-align:center">Total Closing Balance :{{$total_closing < 0 ? '('.abs($total_closing).')' : $total_closing}}</th>
-                        
+
                     </tr>
                 </table>
                 <hr>
@@ -148,7 +148,7 @@ label, .col {
                           <th></th>
                           <th></th>
                           <th></th>
-                          
+
                           <th></th>
                        </tr> -->
                        <tr>
@@ -167,21 +167,21 @@ label, .col {
                     </thead>
                     <tbody>
                     @if(!empty($trialbalance))
-                          @foreach($trialbalance as $tb) 
+                          @foreach($trialbalance as $tb)
                             <tr>
                               <td>{{$tb->acc_num}}</td>
                               <td>{{$tb->acc_name}}</td>
                               <td>{{$tb->total_opening_balance < 0 ? '('.abs($tb->total_opening_balance).')' : $tb->total_opening_balance}}</td>
-                              <td>{{$tb->dr < 0 ? '('.abs($tb->dr).')' : $tb->dr}}</td> 
+                              <td>{{$tb->dr < 0 ? '('.abs($tb->dr).')' : $tb->dr}}</td>
                               <td>{{$tb->total_dr_transactions < 0 ? '('.abs($tb->total_dr_transactions).')' : $tb->total_dr_transactions}}</td>
                               <td>{{$tb->cr < 0 ? '('.abs($tb->cr).')' : $tb->cr}}</td>
                               <td>{{$tb->total_cr_transactions < 0 ? '('.abs($tb->total_cr_transactions).')' : $tb->total_cr_transactions}}</td>
                               <td>{{$tb->total_closing_balance < 0 ? '('.abs($tb->total_closing_balance).')' : $tb->total_closing_balance}}</td>
                               <td>
-                                {{$tb->deposit < 0 ? '('.abs($tb->deposit).')' : $tb->deposit}} 
+                                {{$tb->deposit < 0 ? '('.abs($tb->deposit).')' : $tb->deposit}}
                               </td>
                               <td>
-                                {{$tb->widthdrawal < 0 ? '('.abs($tb->widthdrawal).')' : $tb->widthdrawal}} 
+                                {{$tb->widthdrawal < 0 ? '('.abs($tb->widthdrawal).')' : $tb->widthdrawal}}
                             </td>
                             </tr>
                           @endforeach

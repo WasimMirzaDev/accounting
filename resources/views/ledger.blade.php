@@ -25,7 +25,7 @@ label, .col {
              <header role="heading">
                 <div class="jarviswidget-ctrls" role="menu">   <a href="javascript:void(0);" class="button-icon jarviswidget-toggle-btn" rel="tooltip" title="" data-placement="bottom" data-original-title="Collapse"><i class="fa fa-minus"></i></a> <a href="javascript:void(0);" class="button-icon jarviswidget-fullscreen-btn" rel="tooltip" title="" data-placement="bottom" data-original-title="Fullscreen"><i class="fa fa-expand "></i></a> <a href="javascript:void(0);" class="button-icon jarviswidget-delete-btn" rel="tooltip" title="" data-placement="bottom" data-original-title="Delete"><i class="fa fa-times"></i></a></div>
                 <span class="widget-icon"> <i class="fa fa-check txt-color-green"></i> </span>
-                <h2>Account Types</h2>
+                <h2>Account Statment / Ledger</h2>
                 <span class="jarviswidget-loader" style="display: none;"><i class="fa fa-refresh fa-spin"></i></span>
              </header>
              <div role="content" style="display: block;">
@@ -58,13 +58,13 @@ label, .col {
                              <section class="col col-2">
                                From Date: <small style="color:red;">*</small>
                                <label class="input">
-                                 <input type="text" class="datepicker" autocomplete="off" name="from_date" value="{{old('from_date')}}" placeholder="">
+                                 <input type="text" class="datepicker" autocomplete="off" name="from_date" value="{{!empty(old('from_date')) ? old('from_date') : date('d.m.2021')}}" placeholder="">
                                </label>
                              </section>
                              <section class="col col-2">
                                To Date: <small style="color:red;">*</small>
                                <label class="input">
-                                 <input type="text" class="datepicker" autocomplete="off" name="to_date" value="{{old('to_date')}}" placeholder="">
+                                 <input type="text" class="datepicker" autocomplete="off" name="to_date" value="{{!empty(old('to_date')) ? old('to_date') : date('d.m.Y')}}" placeholder="">
                                </label>
                              </section>
                              <section class="col col-5">
@@ -74,25 +74,11 @@ label, .col {
                                   @if(!empty($level3))
                                     @foreach($level3 as $acc)
                                       <option myacc_num="{{$acc->acc_num}}" @if($acc->id == old('l3_id')) {{'selected'}} @endif myacc_type="{{$acc->account_type->name}}" value="{{$acc->id}}">
-                                        {{$acc->acc_name}}
+                                        {{$acc->acc_name}} | {{$acc->acc_num}} | {{ $acc->account_type->name}}
                                       </option>
                                     @endforeach
                                   @endif
                                 </select>
-                             </section>
-                           </div>
-                           <div class="row">
-                             <section class="col col-2">
-                               Account #:
-                               <label class="input">
-                                 <input type="text" class="readonly" id="acc_selected_num" autocomplete="off" name="accnum" value="{{old('accnum')}}" placeholder="" readonly>
-                               </label>
-                             </section>
-                             <section class="col col-3">
-                              Type:
-                               <label class="input">
-                                 <input type="text" class="readonly" id="acc_selected_type" autocomplete="off" name="acctype" value="{{old('acctype')}}" placeholder="" readonly>
-                               </label>
                              </section>
                              <section class="col col-2">
                                <button type="submit" id="save_btn" class="btn btn-success" style="padding:8px 16px; margin-top:15px;">
@@ -107,22 +93,15 @@ label, .col {
                  <table id="datatable_fixed_column3" class="display table table-striped table-bordered" width="100%">
                     <thead>
                        <tr>
-                          <th class="hasinput">
-                             <input type="text" class="form-control" placeholder="" />
-                          </th>
-                          <th class="hasinput">
-                             <input class="form-control" placeholder="" type="text">
-                          </th>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                       </tr>
-                       <tr>
+                          <th>Trn</th>
                           <th>Date</th>
+                          <th>Type</th>
+                          <th>Clear</th>
                           <th>Description</th>
                           <th>Debit</th>
                           <th>Credit</th>
                           <th>Balance</th>
+                          <th>Ok</th>
                        </tr>
                     </thead>
                     <tbody>
@@ -134,11 +113,17 @@ label, .col {
                               @endphp
                             @endif
                             <tr>
-                              <td>{{$l->date}}</td>
+                              <td style="width:1%;">{{$l->id}}</td>
+                              <td style="width:1%;">@if($loop->index > 0){{date('d.m.Y', strtotime($l->date))}}@endif</td>
+                              <td style="width:1%;">{{$l->vt_name}}</td>
+                              <td style="width:1%;">@if($loop->index > 0)<input type="checkbox" {{$l->clear ? 'checked' : ''}} onclick="clear_payment({{$l->id}}, this)" value="1" />@endif</td>
                               <td>{{$l->narration}}</td>
-                              <td>{{$l->dr}}</td>
-                              <td>{{$l->cr}}</td>
-                              <td>{{$balance < 0 ? '('. abs($balance). ')' : $balance}}</td>
+                              <td style="width:1%;">{{$l->dr}}</td>
+                              <td style="width:1%;">{{$l->cr}}</td>
+                              <td style="width:1%;">{{$balance < 0 ? '('. abs($balance). ')' : $balance}}</td>
+                              <td style="width:10%;">@if($loop->index > 0)<input type="checkbox" {{$l->ok ? 'checked' : ''}} onclick="ok_payment({{$l->id}}, this)" value="1" />
+                                  <a href="{{route('transaction.edit')}}/{{$l->id}}" class="btn btn-xs btn-info"> <i class="fa fa-edit"></i> </a>@endif
+                              </td>
                             </tr>
                           @endforeach
                        @endif
@@ -159,5 +144,47 @@ function fetch_acc_detail(acc)
 {
   $("#acc_selected_num").val($('option:selected', $(acc)).attr('myacc_num'));
   $("#acc_selected_type").val($('option:selected', $(acc)).attr('myacc_type'));
+}
+
+function clear_payment(id, elm)
+{
+  let text = "Are you sure to do this?";
+  var vlu = $(elm).prop('checked') ? 1 : 0;
+  if (confirm(text) == true) {
+      $.ajax({
+        url: "{{route('payment.clear')}}",
+        method: 'post',
+        data: {id: id, vlu:vlu},
+        success: function(feedback)
+        {
+
+        }
+      })
+  } else
+  {
+    $(elm).prop('checked', false);
+    return;
+  }
+}
+
+function ok_payment(id, elm)
+{
+  let text = "Are you sure to do this?";
+  var vlu = $(elm).prop('checked') ? 1 : 0;
+  if (confirm(text) == true) {
+      $.ajax({
+        url: "{{route('payment.ok')}}",
+        method: 'post',
+        data: {id: id, vlu:vlu},
+        success: function(feedback)
+        {
+
+        }
+      })
+  } else
+  {
+    $(elm).prop('checked', false);
+    return;
+  }
 }
 </script>

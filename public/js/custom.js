@@ -109,6 +109,9 @@ $(document).on('click','.editSend',function(){
 
 	var otable = $('#datatable_fixed_column').DataTable(
 		{
+			columns: [
+	    { orderable: false, targets: 0 }
+	  ],
 		    stateSave: false,
 		    "bPaginate": false,
 // 			"pageLength": 25,
@@ -120,6 +123,9 @@ $(document).on('click','.editSend',function(){
 
 var otable = $('#datatable_fixed_column2').DataTable(
 	{
+		columns: [
+    { orderable: false, targets: 0 }
+  ],
 			stateSave: false,
 			"bPaginate": false,
 // 			"pageLength": 25,
@@ -131,7 +137,9 @@ var otable = $('#datatable_fixed_column2').DataTable(
 
 var otable = $('#datatable_fixed_column3').DataTable(
 	{
-			ordering: false,
+		columns: [
+		{ orderable: false, targets: 0 }
+	],
 			stateSave: false,
 			"bPaginate": false,
 // 			"pageLength": 25,

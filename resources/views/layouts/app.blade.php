@@ -460,7 +460,35 @@ use \App\Http\Controllers\Controller;
 /* .dataTables_filter label{
   display:none !important;
 } */
- 
+div.dataTables_filter label {
+ visibility: hidden;
+}
+.dataTables_wrapper .dataTables_filter input {
+ visibility: visible;
+}
+#datatable_fixed_column_filter label{
+ margin-top:5px !important;
+ margin-right:7px !important;
+}
+#datatable_fixed_column2_filter label {
+ margin-top:4px !important;
+}
+.bg-blue{
+  background-color:#007BFF !important;
+  color:white !important;
+}
+.bg-green{
+  background-color:green !important;
+  color:white !important;
+}
+.bg-black{
+  background-color:black !important;
+  color:white !important;
+}
+.navitem{
+  text-align: center !important;
+    padding: 5px 22px !important;
+}
 </style>
 		<!-- PAGE FOOTER -->
 		<div class="page-footer">

@@ -240,10 +240,16 @@ Route::prefix('transaction')->name('transaction.')->middleware('isAdmin', 'auth'
     // accounting start
     Route::get('/show', [App\Http\Controllers\TransactionsController::class, 'index'])->name('show');
     Route::get('/edit/{id?}', [App\Http\Controllers\TransactionsController::class, 'edit'])->name('edit');
+    Route::post('/save-headtype', [App\Http\Controllers\TransactionsController::class, 'store_headtype'])->name('headtype.save');
     Route::get('/delete/{id?}', [App\Http\Controllers\TransactionsController::class, 'destroy'])->name('delete');
-
+    Route::post('/change', [App\Http\Controllers\TransactionsController::class, 'change_voucher_number'])->name('change');
     Route::post('/show', [App\Http\Controllers\TransactionsController::class, 'show_transaction'])->name('show');
     Route::post('/save', [App\Http\Controllers\TransactionsController::class, 'store'])->name('save');
 });
 
+
+Route::prefix('payment')->name('payment.')->middleware('isAdmin', 'auth')->group(function(){
+  Route::post('payment/clear', [App\Http\Controllers\VoucherController::class, 'payment_clear'])->name('clear');
+  Route::post('payment/ok', [App\Http\Controllers\VoucherController::class, 'payment_ok'])->name('ok');
+});
     // accounting end
