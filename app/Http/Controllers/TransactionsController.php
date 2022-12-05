@@ -100,6 +100,7 @@ class TransactionsController extends Controller
               'doc_num' => $request->doc_num,
               'doc_date' => $request->doc_date,
               'cr' => $request->amount,
+              'dr' => 0,
               'description' => $request->description,
               'narration' => $request->narration
             ]
@@ -115,6 +116,7 @@ class TransactionsController extends Controller
               'doc_num' => $request->doc_num,
               'doc_date' => $request->doc_date,
               'dr' => $request->amount,
+              'cr' => 0,
               'description' => $request->description,
               'narration' => $request->narration
             ]
