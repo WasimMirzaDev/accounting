@@ -4,7 +4,6 @@
 @php
 $route_prefix = "profitloss.";
 @endphp
-
 <style media="screen">
 #ledger_menu{
   color:white !important;
@@ -58,26 +57,26 @@ label, .col {
                              <section class="col col-2">
                                From Date: <small style="color:red;">*</small>
                                <label class="input">
-                                 <input type="text" class="datepicker" autocomplete="off" name="from_date" value="{{old('from_date')}}" placeholder="">
+                                 <input type="text" class="datepicker" autocomplete="off" name="p_from" value="{{!empty(old('p_from')) ? old('p_from') : date('d.m.2021')}}" placeholder="">
                                </label>
                              </section>
                              <section class="col col-2">
                                To Date: <small style="color:red;">*</small>
                                <label class="input">
-                                 <input type="text" class="datepicker" autocomplete="off" name="to_date" value="{{old('to_date')}}" placeholder="">
+                                 <input type="text" class="datepicker" autocomplete="off" name="p_to" value="{{!empty(old('p_to')) ? old('p_to') : date('d.m.Y')}}" placeholder="">
                                </label>
                              </section>
                              <section class="col col-2">
                                <button type="submit" id="save_btn" class="btn btn-success" style="width:130px;padding:8px 16px; margin-top:15px;">
-                                 Show 
+                                 Show
                                </button>
                              </section>
                            </div>
                            <!-- <div class="row">
-                             
+
                              <section class="col col-2">
                                <button type="submit" id="save_btn" class="btn btn-success" style="padding:8px 16px; margin-top:15px;">
-                                 Show 
+                                 Show
                                </button>
                              </section>
                            </div> -->
@@ -87,59 +86,51 @@ label, .col {
                  </form>
                  <table width="100%" style="margin-bottom: 10px !important;">
                     <tr>
-                        <th width="50%" style="padding:20px; background-color:green; color:white;text-align:center;">Income</th>
-                        
-                        <th width="50%" style="padding:20px; background-color:red; color:white;text-align:center;">Expenses</th>
-                        
+                        <th width="50%" style="padding:10px; background-color:#28A76B; color:white;text-align:center;">Income</th>
+
+                        <th width="50%" style="padding:10px; background-color:#FF9AA8; color:white;text-align:center;">Expenses</th>
+
                     </tr>
                 </table>
-                 <table id="datatable_fixed_column3" class="display table table-striped table-bordered" width="100%">
-                    <thead>
-                       <!-- <tr>
-                          <th class="hasinput">
-                             <input type="text" class="form-control" placeholder="" />
-                          </th>
-                          <th class="hasinput">
-                             <input class="form-control" placeholder="" type="text">
-                          </th>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                          
-                          <th></th>
-                       </tr> -->
-                       <tr>
-                          <th>Acc#</th>
-                          <th>Title</th>
-                          <th>Amount</th>
-                          <th>Acc#</th>
-                          <th>Title</th>
-                          <th>Amount</th>
-                       </tr>
-                    </thead>
-                    <tbody>
-                       @if(!empty($ledger))
-                          @foreach($ledger as $l)
-                            @if($loop->index > 0)
-                              @php
-                              $balance = $balance + (int)$l->dr - (int)$l->cr;
-                              @endphp
-                            @endif
-                            <tr>
-                              <td>{{$l->date}}</td>
-                              <td>{{$l->narration}}</td>
-                              <td>{{$l->dr}}</td>
-                              <td>{{$l->cr}}</td>
-                              
-                              <td>{{$l->cr}}</td>
-                              <td>{{$l->cr}}</td>
-                              <td>{{$l->cr}}</td>
-                              <td>{{$balance < 0 ? '('. abs($balance). ')' : $balance}}</td>
-                            </tr>
-                          @endforeach
-                       @endif
-                    </tbody>
-                 </table>
+                <div class="row">
+                  <div class="col col-md-12">
+                    <table data-order=[] id="datatable_fixed_column" class="display table table-striped table-bordered"  width="100%">
+                       <thead>
+                          <tr>
+                             <th style="background-color:#28A76B" width="10%">Acc#</th>
+                             <th style="background-color:#28A76B" width="30%">Title</th>
+                             <th style="background-color:#28A76B" width="10%">Amount</th>
+                             <th style="background-color:#FF9AA8" width="10%">Acc#</th>
+                             <th style="background-color:#FF9AA8" width="30%">Title</th>
+                             <th style="background-color:#FF9AA8" width="10%">Amount</th>
+                          </tr>
+                       </thead>
+                       <tbody>
+                          @if(!empty($fetch_table))
+                             @foreach($fetch_table as $exp)
+                               <tr style="height:40px;">
+                                 <td>{{$exp->acc_num1}}</td>
+                                 <td>{{$exp->acc_name1}}</td>
+                                 <td>{{!empty($exp->amt1) ? number_format((int)$exp->amt1) : ''}}</td>
+                                 <td>{{$exp->acc_num}}</td>
+                                 <td>{{$exp->acc_name}}</td>
+                                 <td>{{!empty($exp->amt) ? number_format((int)$exp->amt) : ''}}</td>
+                               </tr>
+                             @endforeach
+                          @endif
+                          <tr style="height:40px; background:#17A2B8; font-weight:bold;font-size:18px;">
+                            <td style="border-right:none;">{{$profit_or_loss}}</td>
+                            <td style="border-left:none;">{{number_format(abs($total_inc - $total_exp))}}</td>
+                            <td >{{number_format($total_inc)}}</td>
+                            <td></td>
+                            <td></td>
+                            <td >{{number_format($total_exp)}}</td>
+                          </tr>
+                       </tbody>
+                    </table>
+                  </div>
+
+                </div>
                 </div>
              </div>
           </div>
@@ -148,8 +139,6 @@ label, .col {
  </section>
 
 @endsection
-
-
 <script type="text/javascript">
 function fetch_acc_detail(acc)
 {
