@@ -42,7 +42,7 @@ class BalanceSheetController extends Controller
         INNER JOIN acs_level3 AS l3 on l3.id = gld.level3_id
         INNER JOIN acs_level2 AS l2 on l2.id = l3.level2_id
         WHERE gld.doc_date <= '$upto_date' AND gld.level3_id in (SELECT id FROM acs_level3 WHERE level2_id IN (SELECT id FROM acs_level2 WHERE level1_id = 2))
-        GROUP BY l3.level2_id
+        GROUP BY l3.level2_id, l2.name
       UNION ALL
 
       SELECT 1 as order2, l3.acc_num, l3.acc_name, l3.level2_id, gd.level3_id, ifnull(sum(cr), 0) - ifnull(sum(dr), 0) as amt, '' as type FROM `a_gld` as gd
@@ -56,7 +56,7 @@ class BalanceSheetController extends Controller
       inner join acs_level3 as l3 on l3.id = gld.level3_id
       inner join acs_level2 as l2 on l2.id = l3.level2_id
       WHERE gld.doc_date <= '$upto_date' and gld.level3_id in (SELECT id from acs_level3 where level2_id in (select id from acs_level2 where level1_id = 2))
-      group by l3.level2_id
+      group by l3.level2_id, l2.name
       ) as lb order by level2_id, order2, acc_name;
       ");
 
@@ -66,7 +66,7 @@ class BalanceSheetController extends Controller
                 INNER JOIN acs_level3 AS l3 on l3.id = gld.level3_id
                 INNER JOIN acs_level2 AS l2 on l2.id = l3.level2_id
                 WHERE gld.doc_date <= '$upto_date' AND gld.level3_id in (SELECT id FROM acs_level3 WHERE level2_id IN (SELECT id FROM acs_level2 WHERE level1_id = 1))
-                GROUP BY l3.level2_id
+                GROUP BY l3.level2_id, l2.name
               UNION ALL
 
               SELECT 1 as order2, l3.acc_num, l3.acc_name, l3.level2_id, gd.level3_id, ifnull(sum(dr), 0) - ifnull(sum(cr), 0) as amt, '' as type FROM `a_gld` as gd
@@ -80,7 +80,7 @@ class BalanceSheetController extends Controller
               inner join acs_level3 as l3 on l3.id = gld.level3_id
               inner join acs_level2 as l2 on l2.id = l3.level2_id
               WHERE gld.doc_date <= '$upto_date' and gld.level3_id in (SELECT id from acs_level3 where level2_id in (select id from acs_level2 where level1_id = 1))
-              group by l3.level2_id
+              group by l3.level2_id, l2.name
               ) as lb order by level2_id, order2, acc_name;
       ");
 
