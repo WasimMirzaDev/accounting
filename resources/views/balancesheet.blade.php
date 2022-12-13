@@ -13,6 +13,9 @@ $route_prefix = "balancesheet.";
 label, .col {
   color:black;
 }
+#datatable_fixed_column td{
+  padding:2px !important;
+}
 
 </style>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
@@ -57,16 +60,15 @@ label, .col {
                            <div class="row">
                              <section class="col col-3">
                                 <label for="name" class="label" style="margin-bottom: 0px;">Formated Values with Barkets</label>
-                                <select class="select2" name="subtype" onchange="fetch_acc_detail(this)">
-                                  <option value="">No</option>
-                                  <option value="">Yes</option>
-
+                                <select class="select2" name="formated">
+                                  <option @if(old('formated') == 1) selected @endif value="1">Yes</option>
+                                  <option @if(old('formated') == '0') selected @endif value="0">No</option>
                                 </select>
                              </section>
                              <section class="col col-2">
                                Upto Date: <small style="color:red;">*</small>
                                <label class="input">
-                                 <input type="text" class="datepicker" autocomplete="off" name="to_date" value="{{old('to_date')}}" placeholder="">
+                                 <input type="text" class="datepicker" autocomplete="off" name="upto_date" value="{{!empty(old('upto_date')) ? old('upto_date') : date('d.m.Y')}}" placeholder="">
                                </label>
                              </section>
                              <section class="col col-2">
@@ -76,10 +78,10 @@ label, .col {
                              </section>
                            </div>
                            <!-- <div class="row">
-                             
+
                              <section class="col col-2">
                                <button type="submit" id="save_btn" class="btn btn-success" style="padding:8px 16px; margin-top:15px;">
-                                 Show 
+                                 Show
                                </button>
                              </section>
                            </div> -->
@@ -89,59 +91,120 @@ label, .col {
                  </form>
                  <table width="100%" style="margin-bottom: 10px !important;">
                     <tr>
-                        <th width="50%" style="padding:20px; background-color:red; color:white;text-align:center;">Liabilities</th>
-                        
-                        <th width="50%" style="padding:20px; background-color:green; color:white;text-align:center;">Assets</th>
-                        
+                        <th width="50%" style="padding:10px; background-color:#DC3545; text-align:center;">Liabilities</th>
+                        <th width="50%" style="padding:10px; background-color:#28A76B; text-align:center;">Assets</th>
                     </tr>
                 </table>
-                 <table id="datatable_fixed_column3" class="display table table-striped table-bordered" width="100%">
-                    <thead>
-                       <!-- <tr>
-                          <th class="hasinput">
-                             <input type="text" class="form-control" placeholder="" />
-                          </th>
-                          <th class="hasinput">
-                             <input class="form-control" placeholder="" type="text">
-                          </th>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                          
-                          <th></th>
-                       </tr> -->
-                       <tr>
-                          <th>Acc#</th>
-                          <th>Title</th>
-                          <th>Amount</th>
-                          <th>Acc#</th>
-                          <th>Title</th>
-                          <th>Amount</th>
-                       </tr>
-                    </thead>
-                    <tbody>
-                       @if(!empty($ledger))
-                          @foreach($ledger as $l)
-                            @if($loop->index > 0)
-                              @php
-                              $balance = $balance + (int)$l->dr - (int)$l->cr;
-                              @endphp
-                            @endif
-                            <tr>
-                              <td>{{$l->date}}</td>
-                              <td>{{$l->narration}}</td>
-                              <td>{{$l->dr}}</td>
-                              <td>{{$l->cr}}</td>
-                              
-                              <td>{{$l->cr}}</td>
-                              <td>{{$l->cr}}</td>
-                              <td>{{$l->cr}}</td>
-                              <td>{{$balance < 0 ? '('. abs($balance). ')' : $balance}}</td>
-                            </tr>
-                          @endforeach
-                       @endif
-                    </tbody>
-                 </table>
+                <div class="row">
+                  <div class="col col-md-12">
+                    <table data-order=[] id="datatable_fixed_column" class="display table table-striped "  width="100%">
+                       <thead>
+                          <tr>
+                            <th style="background-color:lightgrey" width="10%">Acc#</th>
+                            <th style="background-color:lightgrey" width="30%">Title</th>
+                            <th style="background-color:lightgrey" width="10%">Amount</th>
+                             <th style="background-color:lightgrey" width="10%">Acc#</th>
+                             <th style="background-color:lightgrey" width="30%">Title</th>
+                             <th style="background-color:lightgrey" width="10%">Amount</th>
+                          </tr>
+                       </thead>
+                       <tbody>
+                          @if(!empty($fetch_table))
+                             @foreach($fetch_table as $exp)
+                               <tr style="height:20px;">
+                                 @php $bg = ''; @endphp
+                                 @if($exp->type == 'head')
+                                  @php $bg = '#338BAB'; @endphp
+                                 @endif
+                                 @if($exp->type == 'total')
+                                  @php $bg = 'lightgrey'; @endphp
+                                 @endif
+
+
+                                 @php $bg1 = ''; @endphp
+                                 @if($exp->type1 == 'head')
+                                  @php $bg1 = '#338BAB'; @endphp
+                                 @endif
+                                 @if($exp->type1 == 'total')
+                                  @php $bg1 = 'lightgrey'; @endphp
+                                 @endif
+
+                                  @if(empty($formated))
+
+                                    <td style="background-color:{{$bg}}">{{$exp->acc_num}}</td>
+                                    <td style="background-color:{{$bg}}">{{$exp->acc_name}}</td>
+                                    <td style="background-color:{{$bg}}">{{!empty($exp->amt) ? number_format((int)$exp->amt) : ''}}</td>
+                                    <td style="background-color:{{$bg1}}">{{$exp->acc_num1}}</td>
+                                    <td style="background-color:{{$bg1}}">{{$exp->acc_name1}}</td>
+                                    <td style="background-color:{{$bg1}}">{{!empty($exp->amt1) ? number_format((int)$exp->amt1) : ''}}</td>
+                                    @else
+
+                                    <td style="background-color:{{$bg}}">{{$exp->acc_num}}</td>
+                                    <td style="background-color:{{$bg}}">{{$exp->acc_name}}</td>
+                                    <td style="background-color:{{$bg}}">
+                                      @if(!empty($exp->amt))
+                                        @if($exp->amt > 0)
+                                          {{number_format((int)$exp->amt)}}
+                                        @else
+                                        ({{number_format(abs((int)$exp->amt))}})
+                                        @endif
+                                      @endif
+                                    </td>
+                                    <td style="background-color:{{$bg1}}">{{$exp->acc_num1}}</td>
+                                    <td style="background-color:{{$bg1}}">{{$exp->acc_name1}}</td>
+                                    <td style="background-color:{{$bg1}}">
+                                      @if(!empty($exp->amt1))
+                                        @if($exp->amt1 > 0)
+                                          {{number_format((int)$exp->amt1)}}
+                                        @else
+                                        ({{number_format(abs((int)$exp->amt1))}})
+                                        @endif
+                                      @endif
+                                    </td>
+
+                                  @endif
+
+                               </tr>
+                             @endforeach
+                             <tr style="background-color:#FFC107;">
+                               <td></td>
+                               <td>Total Liabilities:
+                               @if(!empty($formated))
+                                 @if(!empty($total_liab))
+                                   @if($total_liab > 0)
+                                     {{number_format((int)$total_liab)}}
+                                   @else
+                                   ({{number_format(abs((int)$total_liab))}})
+                                   @endif
+                                 @endif
+                               @else
+                                {{$total_liab}}
+                               @endif
+
+                               </td>
+                               <td></td>
+                               <td></td>
+                               <td>Total Assets:
+                                @if(!empty($formated))
+                                 @if(!empty($total_assets))
+                                   @if($total_assets > 0)
+                                     {{number_format((int)$total_assets)}}
+                                   @else
+                                   ({{number_format(abs((int)$total_assets))}})
+                                   @endif
+                                 @endif
+                               @else
+                                {{$total_assets}}
+                               @endif
+                               </td>
+                               <td></td>
+                             </tr>
+                          @endif
+                       </tbody>
+                    </table>
+                  </div>
+
+                </div>
                 </div>
              </div>
           </div>

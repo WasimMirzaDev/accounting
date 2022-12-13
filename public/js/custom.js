@@ -67,10 +67,7 @@ $(document).on('click','.editSend',function(){
 							}
 	            },
 	            {
-	                extend: 'pdfHtml5',
-	                exportOptions: {
-	                    columns: [ 0, 1, 2, 5 ]
-	                }
+	                extend: 'pdfHtml5', 
 	            },
 				{
                 text: 'Select all',
@@ -86,32 +83,13 @@ $(document).on('click','.editSend',function(){
             },
 	            'colvis'
 	        ];
-	if($('#datatable_fixed_column').hasClass('studentTable')){
-		buttons.push({
-                text: 'Add Note To Checked Students',
-                action: function ( e, dt, node, config ) {
-					$('.backoverlay').fadeIn();
-					$('.note_popup').fadeIn();
-                }
-            });
-
-		buttons.push({
-                text: 'Edit Checked Students',
-                action: function ( e, dt, node, config ) {
-					$('.backoverlay').fadeIn();
-					$('.all_popup').fadeIn();
-                }
-            });
-	}
 
 
 
 
 	var otable = $('#datatable_fixed_column').DataTable(
 		{
-			columns: [
-	    { orderable: false, targets: 0 }
-	  ],
+
 		    stateSave: false,
 		    "bPaginate": false,
 // 			"pageLength": 25,
@@ -123,9 +101,7 @@ $(document).on('click','.editSend',function(){
 
 var otable = $('#datatable_fixed_column2').DataTable(
 	{
-		columns: [
-    { orderable: false, targets: 0 }
-  ],
+
 			stateSave: false,
 			"bPaginate": false,
 // 			"pageLength": 25,
@@ -137,9 +113,7 @@ var otable = $('#datatable_fixed_column2').DataTable(
 
 var otable = $('#datatable_fixed_column3').DataTable(
 	{
-		columns: [
-		{ orderable: false, targets: 0 }
-	],
+
 			stateSave: false,
 			"bPaginate": false,
 // 			"pageLength": 25,

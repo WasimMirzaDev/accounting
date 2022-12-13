@@ -99,6 +99,7 @@ class VoucherController extends Controller
        $vtype = Vchtype::where('id', $request->vt_id)->pluck('is_receiving')->first();
 
        $request->doc_date = date('Y-m-d', strtotime($request->doc_date));
+
        if($vtype == 1)
        {
          $d =  Voucherdetail::updateOrCreate(['id' => $request->id],
@@ -149,6 +150,18 @@ class VoucherController extends Controller
            'posting_account.required' => 'Posting Account is required'
        ]);
 
+       $vtype = Vchtype::where('id', $request->vt_id)->pluck('is_receiving')->first();
+
+       if($vtype == 1)
+       {
+         $type = "cr";
+       }
+       else
+       {
+         $type = "dr";
+       }
+
+
        if(!empty($request->level3_id) && !empty($request->vt_id) && !empty($request->amount))
        {
          $d =  Voucherdetail::updateOrCreate(['id' => $request->id],
@@ -158,7 +171,7 @@ class VoucherController extends Controller
               'level3_id' => $request->level3_id,
               'doc_num' => Voucherdetail::max('id')+1,
               'doc_date' => date('Y-m-d'),
-              'dr' => $request->amount,
+              "$type" => $request->amount,
               'description' => $request->description,
               'narration' => ''
             ]

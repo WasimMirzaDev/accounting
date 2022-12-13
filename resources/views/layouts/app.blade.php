@@ -454,9 +454,9 @@ use \App\Http\Controllers\Controller;
 .dt-button:nth-child(5){
   display:none !important;
 }
-.dataTables_filter{
+/* .dataTables_filter{
 	margin-top:-40px !important;
-}
+} */
 /* .dataTables_filter label{
   display:none !important;
 } */
@@ -658,6 +658,13 @@ div.dataTables_filter label {
 		<script src="{{asset('js/plugin/datatables/dataTables.tableTools.min.js')}}"></script>
 		<script src="{{asset('js/plugin/datatables/dataTables.bootstrap.min.js')}}"></script>
 		<script src="{{asset('js/plugin/datatable-responsive/datatables.responsive.min.js')}}"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.colVis.min.js"></script>
+<script src="https://cdn.datatables.net/select/1.3.4/js/dataTables.select.min.js"></script>
 		<script src="{{asset('js/custom.js')}}"></script>
 		<script src="{{asset('js/calendar-functions.js')}}"></script>
 		<script type="text/javascript">
@@ -685,12 +692,5 @@ div.dataTables_filter label {
 	 });
 			});
 		</script>
-		<script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-		<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
-		<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.colVis.min.js"></script>
-		<script src="https://cdn.datatables.net/select/1.3.4/js/dataTables.select.min.js"></script>
 	</body>
 </html>

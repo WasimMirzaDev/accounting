@@ -102,16 +102,6 @@ label, .col {
                          <table id="datatable_fixed_column" class="display table table-striped table-bordered" width="100%">
                             <thead>
                                <tr>
-                                  <th class="hasinput">
-                                     <input type="text" class="form-control" placeholder="" />
-                                  </th>
-                                  <th class="hasinput">
-                                     <input class="form-control" placeholder="" type="text">
-                                  </th>
-                                  <th></th>
-                                  <th></th>
-                               </tr>
-                               <tr>
                                   <th>Name</th>
                                   <th>Account Head</th>
                                   <th>Edit</th>
